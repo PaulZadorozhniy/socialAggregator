@@ -1,0 +1,20 @@
+<ion-view view-title="Search">
+  <ion-content>
+    <h1>SignUp</h1>
+    <form ng-submit="signUp()">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input type="text" ng-model="signUpData.email">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="password" ng-model="signUpData.password">
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit">Sign Up</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>
