@@ -1,4 +1,18 @@
 {
   "name": "socialAggregator",
-  "app_id": ""
+  "app_id": "",
+  "proxies": [
+    {
+      "path": "/signup",
+      "proxyUrl": "http://localhost:3000/signup"
+    },
+    {
+      "path": "/login",
+      "proxyUrl": "http://localhost:3000/login"
+    },
+    {
+      "path": "/logout",
+      "proxyUrl": "http://localhost:3000/logout"
+    }
+  ]
 }
