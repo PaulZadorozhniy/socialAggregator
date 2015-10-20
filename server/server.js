@@ -1,48 +1,38 @@
-// server.js
+var express  = require('express');
+var app      = express();
+var port     = process.env.PORT || 3000;
+var mongoose = require('mongoose');
+var passport = require('passport');
+var flash    = require('connect-flash');
 
-// modules =================================================
-var express        = require('express');
-var app            = express();
-var bodyParser     = require('body-parser');
-var methodOverride = require('method-override');
+var morgan       = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser   = require('body-parser');
+var session      = require('express-session');
 
-// configuration ===========================================
+var configDB = require('./config/db.js');
 
-// config files
-var db = require('./config/db');
+// configuration ===============================================================
+mongoose.connect(configDB.url); // connect to our database
 
-// set our port
-var port = process.env.PORT || 3000;
+ require('./config/passport')(passport); // pass passport for configuration
 
-// connect to our mongoDB database 
-// (uncomment after you enter in your own credentials in config/db.js)
-// mongoose.connect(db.url); 
+// set up our express application
+app.use(morgan('dev')); // log every request to the console
+app.use(cookieParser()); // read cookies (needed for auth)
+app.use(bodyParser()); // get information from html forms
 
-// get all data/stuff of the body (POST) parameters
-// parse application/json 
-app.use(bodyParser.json());
+app.set('view engine', 'ejs'); // set up ejs for templating
 
-// parse application/vnd.api+json as json
-app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+// required for passport
+app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+// routes ======================================================================
+require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
-// override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
-app.use(methodOverride('X-HTTP-Method-Override'));
-
-// set the static files location /public/img will be /img for users
-app.use(express.static(__dirname + '/public'));
-
-// routes ==================================================
-require('./app/routes')(app); // configure our routes
-
-// start app ===============================================
-// startup our app at http://localhost:3000
+// launch ======================================================================
 app.listen(port);
-
-// shoutout to the user                     
-console.log('Magic happens on port ' + port);
-
-// expose app           
-exports = module.exports = app;
+console.log('The magic happens on port ' + port);
