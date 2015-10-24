@@ -1,5 +1,6 @@
 var User = require('./models/user');
 var passport = require('passport');
+var config = require('../config/index.js');
 
 module.exports = function (app) {
 
@@ -24,7 +25,9 @@ module.exports = function (app) {
     res.send({message: 'ok'});
   });
 
+  //TODO works wrong. Figure out with cookies, token, encoding.
   app.get('/logout', function (req, res) {
+    res.cookie(config.token.name.cookie, '', {maxAge: -3600});
     req.logout();
     res.json({
       status:  "OK",
